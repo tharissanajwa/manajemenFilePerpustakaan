@@ -1,0 +1,206 @@
+import java.io.*;
+
+public class FileManager {
+    public static void loadBukuFile() {
+        try {
+            File file = new File("dataCsv/book/listBuku.csv");
+            Library library = new Library(); // Asumsi bahwa Library memiliki metode getBooks() yang mengembalikan daftar buku
+
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+
+            String line;
+            // Skip the header line
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                int no = Integer.parseInt(parts[0].trim());
+                String judul = parts[1].trim();
+                String penulis = parts[2].trim();
+                String isbn = parts[3].trim();
+                int jumlah = Integer.parseInt(parts[4].trim());
+                String statusBuku = parts[5].trim();
+
+                boolean isbnExists = false;
+                for (Book book : library.getBook()) {
+                    if (book.getIsbn().equals(isbn)) {
+                        isbnExists = true;
+                        break;
+                    }
+                }
+
+                if (!isbnExists) {
+                    Book book = new Book(judul, penulis, isbn, jumlah, statusBuku, null);
+                    library.getBook().add(book);
+                }
+
+            }
+
+            br.close();
+            fr.close();
+        } catch (FileNotFoundException error) {
+            System.out.println("Mohon maaf, file belum ada. Silahkan save terlebih dahulu file nya.");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveBukuFile() {
+        try {
+            Library library = new Library(); // Asumsi bahwa Library memiliki metode getBooks() yang mengembalikan daftar buku
+            File file = new File("dataCsv/book/listBuku.csv");
+
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            // Tulis header csv
+            bw.write("No,Judul,Penulis,ISBN,Jumlah,Status Buku,ID Anggota");
+            bw.newLine();
+
+            // Tulis data buku
+            int no = 1;
+            for (Book book : library.getBook()) {
+                if (book.getStatusBuku().equalsIgnoreCase("aktif") && book.getJumlah() == 1) {
+                    bw.write(
+                            no + "," +
+                                    "\"" + book.getJudul() + "\"," +
+                                    "\"" + book.getPenulis() + "\"," +
+                                    "\"" + book.getIsbn() + "\"," +
+                                    "\"" + book.getJumlah() + "\"," +
+                                    "\"" + book.getStatusBuku() + "\"," +
+                                    book.getIdAnggota()
+                    );
+                    bw.newLine();
+                    no++;
+                }
+            }
+
+            bw.close();
+            fw.close();
+        } catch (FileNotFoundException error) {
+            error.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveBukuPinjamFile() {
+        try {
+            Library library = new Library(); // Asumsi bahwa Library memiliki metode getBooks() yang mengembalikan daftar buku
+            File file = new File("dataCsv/book/listBukuPinjam.csv");
+
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            // Tulis CSV header
+            bw.write("No,Judul,Penulis,ISBN,Peminjam");
+            bw.newLine();
+
+            // Tulis data buku
+            int no = 1;
+            for (Book book : library.getBook()) {
+                for (Anggota member : library.getMember()) {
+                    if (book.getIdAnggota() != null && book.getJumlah() == 0 && book.getIdAnggota().equalsIgnoreCase(member.getIdAnggota())) {
+                        bw.write(
+                                no + "," +
+                                        "\"" + book.getJudul() + "\"," +
+                                        "\"" + book.getPenulis() + "\"," +
+                                        "\"" + book.getIsbn() + "\"," +
+                                        "\"" + member.getNama() + "\""
+                        );
+                        bw.newLine();
+                        no++;
+                    } else {
+                        bw.write("Mohon maaf, data belum ada. Silahkan lakukan terlebih dahulu peminjaman dan pengembalian buku.");
+                    }
+                }
+            }
+
+            bw.close();
+            fw.close();
+        } catch (FileNotFoundException error) {
+            error.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadAnggotaFile() {
+        try {
+            File file = new File("dataCsv/member/listAnggota.csv");
+            Library library = new Library();
+
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+
+            String line;
+            // Skip the header line
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                int no = Integer.parseInt(parts[0].trim());
+                String idAnggota = parts[1].trim();
+                String namaAnggota = parts[2].trim();
+                String statusAnggota = parts[3].trim();
+
+                boolean idAnggotaExists = false;
+                for (Anggota member : library.getMember()) {
+                    if (member.getIdAnggota().equals(idAnggota)) {
+                        idAnggotaExists = true;
+                        break;
+                    }
+                }
+
+                if (!idAnggotaExists) {
+                    Anggota member = new Anggota(idAnggota, namaAnggota, statusAnggota);
+                    library.getMember().add(member);
+                }
+
+            }
+
+            br.close();
+            fr.close();
+        } catch (FileNotFoundException error) {
+            System.out.println("Mohon maaf, file belum ada. Silahkan save terlebih dahulu file nya.");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveAnggotaFile() {
+        try {
+            Library library = new Library(); // Asumsi bahwa Library memiliki metode getBooks() yang mengembalikan daftar buku
+            File file = new File("dataCsv/member/listAnggota.csv");
+
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            // Write CSV header
+            bw.write("No,Id Anggota,Nama Anggota,Status Anggota");
+            bw.newLine();
+
+            // Write member data
+            int no = 1;
+            for (Anggota member : library.getMember()) {
+                bw.write(
+                        no + "," +
+                                "\"" + member.getIdAnggota() + "\"," +
+                                "\"" + member.getNama()  + "\"," +
+                                "\"" + member.getStatusAnggota()  + "\""
+                );
+                bw.newLine();
+                no++;
+            }
+
+            bw.close();
+            fw.close();
+        } catch (FileNotFoundException error) {
+            error.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+}
+
