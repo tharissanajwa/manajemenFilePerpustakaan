@@ -1,2 +1,7 @@
 No,Judul,Penulis,ISBN,Jumlah,Status Buku,ID Anggota
-1,"Pelangi","Titi Sanaria","978-678-7656-78-9",1,"aktif",null
+1,Menanti Hari Berganti,Titi Sanaria,978-602-5645-67-0,1,aktif,null
+2,Sunset Bersama Rosie,Tere Liye Dar,978-603-4567-89-1,1,aktif,null
+3,Hujan Di Hari Minggu,Luluk Fajriya,978-603-4567-65-2,1,aktif,null
+4,Menanti Hari Berganti,Titi Sanaria,978-656-7897-65-3,1,aktif,null
+5,Pelangi Di Atas Awan,Tere Liye Dar,978-602-7865-46-7,1,aktif,null
+6,Pelangi Di Atas Awan,Tere Liye Dar,978-656-7890-98-7,0,tidak aktif,null

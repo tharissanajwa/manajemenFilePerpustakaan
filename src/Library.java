@@ -9,10 +9,8 @@ public class Library {
         return books;
     }
 
-    private static List<Anggota> member = new ArrayList<>();
-    public static List<Anggota> getMember () {
-        return member;
-    }
+    private static List<Anggota> member = new ArrayList<>(); // Inisialisasi struktur data untuk menyimpan informasi member/anggota
+    public static List<Anggota> getMember () { return member; }
 
     private static List<String> history = new ArrayList<>(); // Inisialisasi struktur data untuk menyimpan history buku
     public static List<String> getHistory () {
@@ -145,8 +143,9 @@ public class Library {
                         }
                     }
                 }
+                // Case 3 untuk memilih menu manajemen file
                 case 3 -> {
-                    FileManager fileManager = new FileManager();
+                    FileManager fileManager = new FileManager(); // Memanggil class fileanager agar bisa dipanggil dalam class ini
                     boolean fileLooping = true;
                     while (fileLooping) {
                         tampilkanManajemenFile();
@@ -154,23 +153,35 @@ public class Library {
                         switch (pilihanFile) {
                             case 1 -> {
                                 System.out.println("Anda memilih menu untuk load file buku.");
-                                fileManager.loadBukuFile();
+                                fileManager.loadBukuFile(); // Memanggil fungsi load buku, yang berfungsi untuk import file csv ke database(arrayList)
                             }
                             case 2 -> {
                                 System.out.println("Anda memilih menu untuk menyimpan list buku dalam bentuk file.");
-                                fileManager.saveBukuFile();
+                                fileManager.saveBukuFile(); // Memanggil fungsi save buku, berfungsi untuk menyimpan data buku ke file csv
                             }
                             case 3 -> {
                                 System.out.println("Anda memilih menu untuk menyimpan list buku pinjam dalam bentuk file.");
-                                fileManager.saveBukuPinjamFile();
+                                fileManager.saveBukuPinjamFile(); // Memanggil fungsi save buku pinjam, berfungsi untuk menyimpan data buku yang sedang dipinjamkan ke file csv
                             }
                             case 4 -> {
-                                System.out.println("Anda memilih menu untuk load file anggota.");
-                                fileManager.loadAnggotaFile();
+                                System.out.println("Anda memilih menu untuk menyimpan list jumlah buku dalam bentuk file.");
+                                fileManager.saveBukuJumlahFile(); // Memanggil fungsi save jumlah buku, berfungsi untuk menyimpan data jumlah buku ke file csv
                             }
                             case 5 -> {
+                                System.out.println("Anda memilih menu untuk load file history buku.");
+                                fileManager.loadHistoryBukuFile(); // Memanggil fungsi load history buku, yang berfungsi untuk import file csv ke database(arrayList)
+                            }
+                            case 6 -> {
+                                System.out.println("Anda memilih menu untuk menyimpan history buku dalam bentuk file.");
+                                fileManager.saveHistoryBukuFile(); // Memanggil fungsi save history buku, berfungsi untuk menyimpan data history buku ke file csv
+                            }
+                            case 7 -> {
+                                System.out.println("Anda memilih menu untuk load file anggota.");
+                                fileManager.loadAnggotaFile(); // Memanggil fungsi load anggota, berfungsi untuk import file csv ke database(arrayList)
+                            }
+                            case 8 -> {
                                 System.out.println("Anda memilih menu untuk menyimpan list anggota dalam bentuk file.");
-                                fileManager.saveAnggotaFile();
+                                fileManager.saveAnggotaFile(); // Memanggil fungsi save anggota, berfungsi untuk menyimpan data anggota ke file csv
                             }
                             case 0 -> fileLooping = false; // Keluar dari menu manajemen anggota
                             case -1 -> {
@@ -252,12 +263,14 @@ public class Library {
         System.out.println("1. Load Buku");
         System.out.println("2. Simpan Buku");
         System.out.println("3. Simpan Pinjam Buku");
-        System.out.println("4. Load Anggota");
-        System.out.println("5. Simpan Anggota");
-        System.out.println("6. Load History");
+        System.out.println("4. Simpan List Jumlah Buku");
+        System.out.println("5. Load History Buku");
+        System.out.println("6. Simpan History Buku");
+        System.out.println("7. Load Anggota");
+        System.out.println("8. Simpan Anggota");
         System.out.println("0. Keluar dari menu file");
         System.out.println("==================================================================================================================================");
-        System.out.print("Pilihan Anda (0-3) : ");
+        System.out.print("Pilihan Anda (0-8) : ");
     }
     // Fungsi untuk mendapatkan pilihan user
     private static int getPilihanUser(Scanner scanner) {
@@ -277,17 +290,22 @@ public class Library {
         System.out.println("No\tJudul\t\t\t\t\t\t\t\t\t\t\t\t|Penulis\t\t\t\t\t\t\t\t|ISBN");
         System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
         String hasil = null;
-        for (int indeksBuku = 0; indeksBuku < books.size(); indeksBuku++) {
-            String judul = books.get(indeksBuku).getJudul();
-            String penulis = books.get(indeksBuku).getPenulis();
-            String isbn = books.get(indeksBuku).getIsbn();
-            String statusBuku = books.get(indeksBuku).getStatusBuku();
-            int jumlah = books.get(indeksBuku).getJumlah();
-            // Hanya status yang aktif dan jumlah yang bernilai 1, yang data nya akan ditampilkan. Aktif untuk data yang tidak terhapus dan 1 untuk buku yang tidak dipinjam. Begitupun sebaliknya.
-            if (statusBuku.equalsIgnoreCase("aktif") && jumlah == 1) {
-                hasil = System.out.printf("%d.\t%s\t\t\t\t\t\t\t\t|%s\t\t\t\t\t\t\t|%s\n", indeksBuku + 1, judul, penulis, isbn).toString();
+        if (books.size() > 0) {
+            for (int indeksBuku = 0; indeksBuku < books.size(); indeksBuku++) {
+                String judul = books.get(indeksBuku).getJudul();
+                String penulis = books.get(indeksBuku).getPenulis();
+                String isbn = books.get(indeksBuku).getIsbn();
+                String statusBuku = books.get(indeksBuku).getStatusBuku();
+                int jumlah = books.get(indeksBuku).getJumlah();
+                // Hanya status yang aktif dan jumlah yang bernilai 1, yang data nya akan ditampilkan. Aktif untuk data yang tidak terhapus dan 1 untuk buku yang tidak dipinjam. Begitupun sebaliknya.
+                if (statusBuku.equalsIgnoreCase("aktif") && jumlah == 1) {
+                    hasil = System.out.printf("%d.\t%s\t\t\t\t\t\t\t\t|%s\t\t\t\t\t\t\t|%s\n", indeksBuku + 1, judul, penulis, isbn).toString();
+                }
             }
+        } else {
+            hasil = System.out.printf("Mohon maaf data buku belum tersedia. Silahkan tambahkan buku terlebih dahulu.\n").toString();
         }
+
         return hasil;
     }
     // Fungsi untuk menampilkan semua buku yang sedang dipinjam
@@ -315,7 +333,7 @@ public class Library {
             }
         }
         if (!dataExist) { // Bila data tidak ditemukan, maka akan memberikan informasi data tidak ada
-            System.out.println("Mohon maaf data buku yang dipinjam belum tersedia. Silahkan pinjam buku terlebih dahulu.");
+            System.out.println("Mohon maaf data buku yang dipinjam belum tersedia. Silahkan pinjam buku terlebih dahulu. Untuk kembali ke menu, silahkan ketik `keluar`.");
         }
     }
     // Fungsi untuk menampilkan jumlah berdasarkan nama buku
@@ -380,13 +398,17 @@ public class Library {
         System.out.println("No\tID Anggota\t\t\t|Nama");
         System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
         String hasil = null;
-        for (int indeksAnggota = 0; indeksAnggota < member.size(); indeksAnggota++) {
-            String idAnggota = member.get(indeksAnggota).getIdAnggota();
-            String nama = member.get(indeksAnggota).getNama();
-            String statusAnggota = member.get(indeksAnggota).getStatusAnggota();
-            if (statusAnggota.equalsIgnoreCase("aktif")) { // Menampilkan hanya anggota yang berstatus aktif saja(anggota tidak dihapus)
-                hasil = System.out.printf("%d.\t%s\t\t\t\t|%s\n", indeksAnggota + 1, idAnggota, nama).toString();
+        if (member.size() > 0) {
+            for (int indeksAnggota = 0; indeksAnggota < member.size(); indeksAnggota++) {
+                String idAnggota = member.get(indeksAnggota).getIdAnggota();
+                String nama = member.get(indeksAnggota).getNama();
+                String statusAnggota = member.get(indeksAnggota).getStatusAnggota();
+                if (statusAnggota.equalsIgnoreCase("aktif")) { // Menampilkan hanya anggota yang berstatus aktif saja(anggota tidak dihapus)
+                    hasil = System.out.printf("%d.\t%s\t\t\t\t|%s\n", indeksAnggota + 1, idAnggota, nama).toString();
+                }
             }
+        } else {
+            hasil = System.out.printf("Mohon maaf data anggota belum tersedia. Silahkan tambahkan anggota terlebih dahulu.\n").toString();
         }
         return hasil;
     }
@@ -459,7 +481,7 @@ public class Library {
         }
     }
     // Fungsinya untuk menyimpan variabel runningNumber agar bisa di loop-kan
-    private static int runningNumber = 4;
+    private static int runningNumber = 3;
     // Fungsinya untuk generate kode secara otomatis sesuai nama yang diinputkan pengguna
     private static String generateIdAnggota(String namaAnggota) {
         String kodeHuruf = namaAnggota.substring(0, Math.min(3, namaAnggota.length())).toUpperCase(); // Fungsinya untuk mengambil 3 huruf didepan kata nama(dan merubahnya menjadi uppercase)
@@ -485,6 +507,7 @@ public class Library {
                         int indexBuku = Integer.parseInt(pilihanHapus);
                         if (indexBuku - 1 == indeksBuku) { // Mengecek apakah inputan pengguna sama dengan data yang ada di database
                             books.get(indeksBuku).setStatusBuku("tidak aktif"); // Set status buku untuk metode soft delete
+                            books.get(indeksBuku).setJumlah(0);
                             hapusValid = true; // Loop input akan berhenti karena data sudah sesuai
                             errorMessage = false; // Pesan kesalahan tidak akan ditampilkan karena data sudah sesuai
                             System.out.println("Selamat! Buku berhasil terhapus. Berikut update datanya : "); // Menampilkan pesan berhasil
@@ -732,6 +755,7 @@ public class Library {
                                         String judul = books.get(indeksBuku).getJudul();;
                                         int kalkulasi = jumlah + 1; // Jika buku sedang dipinjamkan, maka jumlah ditambah 1 agar nilainya menjadi 1
                                         books.get(indeksBuku).setJumlah(kalkulasi); // Set jumlah buku menjadi 1(buku sudah tersedia lagi/buku sudah dikembalikan)
+                                        books.get(indeksBuku).setIdAnggota(null); // Set idAnggota peminjam kembali menjadi null karena sudah tidak ada peminjam buku
                                         // Menambahkan history bahwa buku sudah dikembalikan
                                         history.add("Buku " + judul + " sudah dikembalikan" + " di tanggal " + formatWaktu() + ".");
                                         System.out.println("Selamat! Anda berhasil mengambalikan buku " + judul + " ke perpustakaan ini."); // Menampilkan pesan keberhasilan
@@ -743,7 +767,7 @@ public class Library {
                                 }
                             }
                             if (cekPinjam == false) { // Menampilkan pesan kesalahan bahwa buku tidak sedang dipinjamkan
-                                System.out.println("Mohon maaf buku ini tidak dipinjamkan.  Silahkan inputkan buku yang sedang dipinjam. Jika ingin kembali ke menu, ketik `keluar`.");
+                                System.out.println("Mohon maaf buku ini tidak dipinjamkan. Silahkan inputkan buku yang sedang dipinjam. Jika ingin kembali ke menu, ketik `keluar`.");
                             }
                             System.out.print("Apakah Anda ingin mengembalikan buku lagi (y/n) ? "); // Menanyakan pengguna apakah ingin meminjam buku lagi?
                             String pilihanPengguna = scanner.nextLine();
